@@ -1,148 +1,183 @@
 import {
-  BarChart3,
   CalendarDays,
-  Cog,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  FileEdit,
+  Flame,
   Image,
-  Lightbulb,
-  Mic,
-  Plus,
+  MessageCircle,
+  MoreHorizontal,
   Send,
   Sparkles,
-  Target,
-  Video
 } from "lucide-react";
 
 const planningItems = [
   {
+    date: "27",
     day: "Segunda-feira",
-    title: "Post de Carrossel",
-    description: "5 dicas para aumentar o engajamento no Instagram.",
+    month: "Abril",
+    type: "Carrossel",
+    title: "Dicas para aumentar o engajamento",
+    description: "Postagem com 5 slides sobre boas práticas para redes sociais.",
     status: "Planejado",
-    icon: <Image size={16} />
   },
   {
+    date: "29",
     day: "Quarta-feira",
-    title: "Post de Imagem",
-    description: "Arte institucional para reforçar posicionamento da marca.",
-    status: "Em revisão",
-    icon: <Target size={16} />
+    month: "Abril",
+    type: "Imagem",
+    title: "Benefícios do Marketing",
+    description: "Arte institucional mostrando o valor da estratégia digital.",
+    status: "Planejado",
   },
   {
-    day: "Sexta-feira",
-    title: "Vídeo Curto",
-    description: "Roteiro rápido com tendência da semana para Reels.",
-    status: "Rascunho",
-    icon: <Video size={16} />
-  }
+    date: "21",
+    day: "Dia 21",
+    month: "Abril",
+    type: "Imagem",
+    title: "Promoção Melzinho 2x1",
+    description: "Post promocional para campanha compre 1 leve 2.",
+    status: "Planejado",
+  },
 ];
 
 export default function Home() {
   return (
     <main className="page">
-      <aside className="leftPanel card">
-        <div>
-          <div className="logoBadge">
-            <Sparkles size={20} />
-          </div>
-          <h2>Assistente de Marketing IA</h2>
-          <p>Seu copiloto para criar estratégias, posts e resultados.</p>
-        </div>
-
-        <nav className="menu">
-          <button className="menuItem active">
-            <Target size={18} />
-            Visão geral
-          </button>
-          <button className="menuItem">
-            <CalendarDays size={18} />
-            Campanhas
-          </button>
-          <button className="menuItem">
-            <BarChart3 size={18} />
-            Insights
-          </button>
-        </nav>
-
-        <button className="menuItem config">
-          <Cog size={18} />
-          Configurações
-        </button>
-      </aside>
-
       <section className="content">
-        <h1>Olá 👋</h1>
+        <header className="topArea">
+          <span className="eyebrow">Assistente Virtual</span>
 
-        <div className="chatBar card">
-          <Sparkles size={18} />
-          <input
-            aria-label="Pergunte ao assistente"
-            placeholder="Peça uma arte + legenda + data de publicação..."
-          />
-          <button aria-label="Falar">
-            <Mic size={16} />
-          </button>
-          <button aria-label="Enviar" className="sendBtn">
-            <Send size={16} />
-          </button>
-        </div>
+          <div className="chatBar">
+            <input placeholder="O que vamos criar hoje para sua marca?" />
+            <button className="sendBtn">
+              <Send size={15} />
+            </button>
+          </div>
+        </header>
 
-        <section className="planner card">
+        <section className="planner">
           <div className="plannerHeader">
             <div>
-              <h3>Planejador de Conteúdo</h3>
-              <p>Converse com a IA e aprove conteúdos para agendar automaticamente.</p>
+              <h1>Calendário da Semana</h1>
+              <p>Aqui está o seu plano de conteúdo estratégico.</p>
             </div>
-            <button className="weekSelector">
-              <CalendarDays size={16} /> Esta semana
-            </button>
+
+            <div className="calendarControls">
+              <button className="weekSelector">
+                <CalendarDays size={15} />
+                Esta semana
+              </button>
+
+              <div className="monthSelector">
+                <span>Abril 2026</span>
+                <button>
+                  <ChevronLeft size={16} />
+                </button>
+                <button>
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="grid">
             {planningItems.map((item) => (
-              <article key={item.day} className="planCard">
-                <span className="chip">{item.day}</span>
-                <h4>{item.title}</h4>
+              <article key={`${item.date}-${item.title}`} className="planCard">
+                <div className="planTop">
+                  <div className="dateBadge">{item.date}</div>
+
+                  <div>
+                    <span className="dayName">{item.day}</span>
+                    <span className="monthName">{item.month}</span>
+                  </div>
+
+                  <button className="moreButton" aria-label="Mais opções">
+                    <MoreHorizontal size={18} />
+                  </button>
+                </div>
+
+                <span className="chip">
+                  <Image size={13} />
+                  {item.type}
+                </span>
+
+                <h2>{item.title}</h2>
                 <p>{item.description}</p>
+
                 <footer>
-                  <span>{item.icon} {item.status}</span>
+                  <span className="statusDot" />
+                  {item.status}
                 </footer>
               </article>
             ))}
           </div>
-
-          <button className="addButton">
-            <Plus size={16} /> Novo item de planejamento
-          </button>
         </section>
       </section>
 
       <aside className="rightPanel">
         <section className="card summary">
-          <h3>Resumo da semana</h3>
-          <ul>
-            <li>
+          <h2>Análise de Performance</h2>
+
+          <div className="chartBox">
+            <div className="chartTop">
+              <span>Alcance Semanal</span>
+              <strong>+14%</strong>
+            </div>
+            <div className="chartLine" />
+          </div>
+
+          <div className="summaryList">
+            <div>
+              <CalendarDays size={17} />
               <strong>3</strong>
               <span>Conteúdos planejados</span>
-            </li>
-            <li>
+            </div>
+
+            <div>
+              <FileEdit size={17} />
               <strong>1</strong>
-              <span>Em revisão</span>
-            </li>
-            <li>
+              <span>Em rascunho</span>
+            </div>
+
+            <div>
+              <CheckCircle2 size={17} />
               <strong>0</strong>
               <span>Publicados</span>
-            </li>
-          </ul>
+            </div>
+          </div>
         </section>
 
-        <section className="card suggestion">
-          <h3>
-            <Lightbulb size={18} /> Sugestão da IA
-          </h3>
+        <section className="card eventCard">
+          <h2>Eventos Sugeridos</h2>
+
+          <div className="eventItem">
+            <div className="eventIcon">
+              <Flame size={19} />
+            </div>
+
+            <div>
+              <strong>Black Friday</strong>
+              <p>Faltam 12 dias. Prepare seu carrossel de ofertas agora!</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="aiTipCard">
+          <h2>
+            <Sparkles size={18} />
+            Dica da IA
+          </h2>
+
           <p>
-            Que tal um carrossel mostrando bastidores da sua empresa para humanizar sua marca esta semana?
+            “Posts com fotos de bastidores performam melhor às terças-feiras.”
           </p>
-          <button>Gerar ideia</button>
+        </section>
+
+        <section className="notificationCard">
+          <MessageCircle size={16} />
+          Novo comentário no Instagram
         </section>
       </aside>
     </main>
