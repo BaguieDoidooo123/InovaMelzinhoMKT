@@ -1,0 +1,355 @@
+:root {
+  --bg: #f3f5fa;
+  --card: #ffffff;
+  --text: #0f2548;
+  --muted: #7c8fac;
+  --line: #e6ebf3;
+  --primary: #6267f4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: 1680px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+}
+
+.mainArea {
+  display: grid;
+  gap: 1.5rem;
+  align-content: start;
+}
+
+.eyebrow {
+  text-align: center;
+  letter-spacing: 0.2em;
+  color: #7f8faf;
+  font-weight: 700;
+  margin: 0.5rem 0 0;
+}
+
+.chatBar {
+  max-width: 860px;
+  width: 100%;
+  justify-self: center;
+  border-radius: 999px;
+  padding: 0.75rem 0.9rem 0.75rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.chatPrompt {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #8093b2;
+  font-size: clamp(1rem, 1.8vw, 2rem);
+}
+
+.generateBtn {
+  border: 0;
+  border-radius: 999px;
+  background: #8a84f5;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 1rem 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.calendar {
+  padding: 2rem;
+}
+
+.calendarTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.calendarTop h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 2vw, 2.2rem);
+}
+
+.calendarTop p {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+}
+
+.calendarActions {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.weekBtn {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  font-weight: 700;
+  color: #24416d;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.monthNav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.45rem;
+  color: #7f8faf;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.monthNav button {
+  border: 0;
+  background: transparent;
+  color: #2f4c75;
+}
+
+.cardsGrid {
+  margin-top: 1.4rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.planCard {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 1.2rem;
+}
+
+.planCard header {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.dateBall {
+  width: 50px;
+  height: 50px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: #fff;
+  background: #0d1f43;
+}
+
+.planCard header p {
+  margin: 0.25rem 0 0;
+  color: #8a9bbb;
+  font-weight: 600;
+}
+
+.tag {
+  margin-top: 1rem;
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: #e9edff;
+  color: #5056ee;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.planCard h2 {
+  margin: 1rem 0 0.5rem;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.planCard > p {
+  color: #50688f;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.planCard footer {
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.planCard footer span {
+  color: #5c70f0;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.planCard footer button {
+  border: 0;
+  background: transparent;
+  color: #b4bfd2;
+}
+
+.rightPanel {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.panelCard,
+.eventCard,
+.tipCard,
+.notifyCard {
+  padding: 1.2rem;
+}
+
+.panelCard h3,
+.eventCard h3 {
+  margin: 0 0 0.9rem;
+  color: #7c8fac;
+  font-size: 1.2rem;
+  letter-spacing: 0.07em;
+}
+
+.performanceChart {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1rem;
+}
+
+.chartHeader {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+.chartHeader strong { color: #00a96d; }
+
+.fakeLine {
+  margin-top: 1rem;
+  height: 58px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #dadeff, transparent),
+    linear-gradient(135deg, #606af2 15%, #7d86ff 45%, #5d67f0 75%, #8d95ff 100%);
+  opacity: 0.8;
+}
+
+.statsList {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  gap: 0.7rem;
+  color: #7487aa;
+  font-weight: 700;
+}
+
+.statsList li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.statsList b {
+  color: #0a2248;
+  font-size: 1.9rem;
+  line-height: 1;
+}
+
+.eventBox {
+  border: 1px solid #f2d9a5;
+  background: #fff9ed;
+  border-radius: 20px;
+  padding: 1rem;
+  display: flex;
+  gap: 0.8rem;
+}
+
+.eventIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: #ff9e00;
+  color: #fff;
+  display: grid;
+  place-items: center;
+}
+
+.eventBox p {
+  margin: 0.3rem 0 0;
+  color: #8a6f3e;
+}
+
+.tipCard {
+  background: linear-gradient(135deg, #4f46e5, #4639f1);
+  color: #fff;
+}
+
+.tipCard h3 {
+  margin: 0 0 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  letter-spacing: 0.05em;
+}
+
+.tipCard p {
+  margin: 0;
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.notifyCard p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #304e75;
+  font-weight: 600;
+}
+
+@media (max-width: 1280px) {
+  .page {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .calendarTop {
+    flex-direction: column;
+  }
+
+  .chatBar {
+    border-radius: 28px;
+  }
+}
