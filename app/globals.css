@@ -673,3 +673,133 @@ button {
     font-size: 20px;
   }
 }
+.sendBtn:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}
+
+.spinIcon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.generationError {
+  margin: 0;
+  color: #9f3d2f;
+  background: #fde8df;
+  border: 1px solid #f2c4b5;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  width: min(860px, 100%);
+}
+
+.generatedCard {
+  width: min(860px, 100%);
+  background: linear-gradient(180deg, #fffaf4 0%, #fff3e4 100%);
+  border: 1px solid #efd7b8;
+  border-radius: 22px;
+  box-shadow: 0 14px 30px rgba(122, 79, 27, 0.08);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.generatedCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.generatedCardHeader h2 {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  color: var(--text-strong);
+}
+
+.generatedCardHeader span {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+  background: #ffe8c7;
+  border: 1px solid #f3cf9d;
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
+.generatedCard h3 {
+  margin: 0;
+  font-size: 24px;
+  color: var(--text-strong);
+}
+
+.generatedCard p {
+  margin: 0;
+  color: var(--muted-strong);
+  line-height: 1.6;
+}
+
+.generatedMeta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.generatedMeta div {
+  border: 1px solid #efdcbf;
+  background: #fffaf3;
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.generatedMeta strong {
+  color: var(--text-strong);
+  font-size: 13px;
+}
+
+.generatedMeta span {
+  color: var(--muted-strong);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.generatedTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.generatedTags span {
+  background: #f7e6cc;
+  color: #6d431f;
+  border: 1px solid #ebcb9f;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 860px) {
+  .generatedMeta {
+    grid-template-columns: 1fr;
+  }
+}

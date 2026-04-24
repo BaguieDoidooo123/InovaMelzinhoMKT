@@ -1,3 +1,6 @@
+"use client";
+
+import { FormEvent, useEffect, useState } from "react";
 import {
   CalendarDays,
   CheckCircle2,
@@ -6,11 +9,21 @@ import {
   FileEdit,
   Flame,
   Image,
+  Loader2,
   MessageCircle,
   MoreHorizontal,
   Send,
   Sparkles,
 } from "lucide-react";
+
+type GeneratedPost = {
+  titulo: string;
+  legenda: string;
+  tipoPost: string;
+  promptVisual: string;
+  sugestaoDataHorario: string;
+  hashtags: string[];
+};
 
 const planningItems = [
   {
@@ -42,19 +55,121 @@ const planningItems = [
   },
 ];
 
+const storageKey = "generated-post-suggestion";
+
 export default function Home() {
+  const [prompt, setPrompt] = useState("");
+  const [generatedPost, setGeneratedPost] = useState<GeneratedPost | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(storageKey);
+
+    if (!stored) {
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(stored) as GeneratedPost;
+      setGeneratedPost(parsed);
+    } catch {
+      localStorage.removeItem(storageKey);
+    }
+  }, []);
+
+  const handleGeneratePost = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!prompt.trim()) {
+      setError("Digite um tema para gerar a sugestão de post.");
+      return;
+    }
+
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/generate-post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const data = (await response.json()) as GeneratedPost | { error: string };
+
+      if (!response.ok) {
+        setError(
+          "error" in data
+            ? data.error
+            : "Não foi possível gerar a sugestão neste momento.",
+        );
+        return;
+      }
+
+      setGeneratedPost(data as GeneratedPost);
+      localStorage.setItem(storageKey, JSON.stringify(data));
+    } catch {
+      setError("Falha de conexão ao gerar a sugestão. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <main className="page">
       <section className="content">
         <header className="topArea">
           <span className="eyebrow">Assistente Virtual</span>
 
-          <div className="chatBar">
-            <input placeholder="O que vamos criar hoje para sua marca?" />
-            <button className="sendBtn">
-              <Send size={15} />
+          <form className="chatBar" onSubmit={handleGeneratePost}>
+            <input
+              value={prompt}
+              onChange={(event) => setPrompt(event.target.value)}
+              placeholder="O que vamos criar hoje para sua marca?"
+            />
+            <button className="sendBtn" type="submit" disabled={isLoading}>
+              {isLoading ? <Loader2 size={15} className="spinIcon" /> : <Send size={15} />}
+              <span>Gerar Arte</span>
             </button>
-          </div>
+          </form>
+
+          {error ? <p className="generationError">{error}</p> : null}
+
+          {generatedPost ? (
+            <section className="generatedCard" aria-live="polite">
+              <div className="generatedCardHeader">
+                <h2>
+                  <Sparkles size={18} />
+                  Sugestão gerada com IA
+                </h2>
+                <span>{generatedPost.tipoPost}</span>
+              </div>
+
+              <h3>{generatedPost.titulo}</h3>
+              <p>{generatedPost.legenda}</p>
+
+              <div className="generatedMeta">
+                <div>
+                  <strong>Prompt visual</strong>
+                  <span>{generatedPost.promptVisual}</span>
+                </div>
+
+                <div>
+                  <strong>Melhor horário</strong>
+                  <span>{generatedPost.sugestaoDataHorario}</span>
+                </div>
+              </div>
+
+              <div className="generatedTags">
+                {generatedPost.hashtags.map((hashtag) => (
+                  <span key={hashtag}>{hashtag}</span>
+                ))}
+              </div>
+            </section>
+          ) : null}
         </header>
 
         <section className="planner">
@@ -170,9 +285,7 @@ export default function Home() {
             Dica da IA
           </h2>
 
-          <p>
-            “Posts com fotos de bastidores performam melhor às terças-feiras.”
-          </p>
+          <p>“Posts com fotos de bastidores performam melhor às terças-feiras.”</p>
         </section>
 
         <section className="notificationCard">
