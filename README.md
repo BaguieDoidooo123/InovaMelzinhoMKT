@@ -3,9 +3,10 @@
 Interface em Next.js para um assistente de IA de marketing com:
 
 - Geração de título, legenda, hashtags, horário sugerido, prompt visual e arte.
-- Preview com ações: regenerar arte, regenerar legenda e aprovar/agendar.
+- Preview com ações: regenerar arte, regenerar legenda, ajustar data/hora e aprovar/agendar.
 - Planejador/calendário lendo posts reais (Supabase).
 - Integração Meta para conexão da conta e publicação manual (`Publicar agora`).
+- Refinamento conversacional: após gerar, envie instruções diretas no campo principal para ajustar a postagem.
 
 ## Rodar localmente
 

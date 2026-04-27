@@ -34,6 +34,12 @@ function parseBrazilDateToIso(dateText: string) {
   return new Date(`${year}-${month}-${day}T${hour}:${minute}:00-03:00`).toISOString();
 }
 
+function toDatetimeLocalValue(isoDate: string) {
+  const date = new Date(isoDate);
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return localDate.toISOString().slice(0, 16);
+}
+
 function formatDateLabel(dateIso: string) {
   const date = new Date(dateIso);
 
@@ -49,6 +55,7 @@ export default function Home() {
   const [generatedPost, setGeneratedPost] = useState<GeneratedPost | null>(null);
   const [scheduledPosts, setScheduledPosts] = useState<ScheduledPost[]>([]);
   const [platforms, setPlatforms] = useState<Platform[]>(["instagram"]);
+  const [selectedScheduleAt, setSelectedScheduleAt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -68,6 +75,7 @@ export default function Home() {
     try {
       const parsed = JSON.parse(stored) as GeneratedPost;
       setGeneratedPost(parsed);
+      setSelectedScheduleAt(toDatetimeLocalValue(parseBrazilDateToIso(parsed.sugestaoDataHorario)));
     } catch {
       localStorage.removeItem(draftStorageKey);
     }
@@ -109,22 +117,33 @@ export default function Home() {
     [scheduledPosts],
   );
 
+  const applyGeneratedPost = (data: GeneratedPost) => {
+    setGeneratedPost(data);
+    setSelectedScheduleAt(toDatetimeLocalValue(parseBrazilDateToIso(data.sugestaoDataHorario)));
+    localStorage.setItem(draftStorageKey, JSON.stringify(data));
+  };
+
   const handleGeneratePost = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!prompt.trim()) {
-      setError("Digite um tema para gerar a sugestão de post.");
+      setError("Digite um pedido para criar ou ajustar a postagem.");
       return;
     }
 
     setError(null);
     setIsLoading(true);
 
+    const endpoint = generatedPost ? "/api/refine-post" : "/api/generate-post";
+    const payload = generatedPost
+      ? { instruction: prompt, currentPost: generatedPost }
+      : { prompt };
+
     try {
-      const response = await fetch("/api/generate-post", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify(payload),
       });
 
       const data = (await response.json()) as GeneratedPost | PostResponseError;
@@ -134,25 +153,49 @@ export default function Home() {
         return;
       }
 
-      setGeneratedPost(data as GeneratedPost);
-      localStorage.setItem(draftStorageKey, JSON.stringify(data));
+      applyGeneratedPost(data as GeneratedPost);
+      setPrompt("");
     } catch {
-      setError("Falha de conexão ao gerar a sugestão. Tente novamente.");
+      setError("Falha de conexão ao gerar/refinar a sugestão. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRegenerateCaption = async () => {
-    if (!prompt.trim()) {
-      setError("Para regenerar legenda, informe o tema na barra principal.");
-      return;
+
+  const handleQuickCaptionRegeneration = async () => {
+    if (!generatedPost) return;
+
+    setPrompt("Reescreva só a legenda, mantendo estrutura, hashtags e horário.");
+
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/refine-post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          instruction: "Reescreva só a legenda, mantendo estrutura, hashtags e horário.",
+          currentPost: generatedPost,
+        }),
+      });
+
+      const data = (await response.json()) as GeneratedPost | PostResponseError;
+
+      if (!response.ok) {
+        setError("error" in data ? data.error : "Não foi possível regenerar legenda.");
+        return;
+      }
+
+      applyGeneratedPost(data as GeneratedPost);
+      setPrompt("");
+    } catch {
+      setError("Falha ao regenerar legenda.");
+    } finally {
+      setIsLoading(false);
     }
-
-    const fakeEvent = { preventDefault: () => undefined } as FormEvent<HTMLFormElement>;
-    await handleGeneratePost(fakeEvent);
   };
-
   const handleRegenerateImage = async () => {
     if (!generatedPost) return;
 
@@ -173,9 +216,7 @@ export default function Home() {
         return;
       }
 
-      const nextPost = { ...generatedPost, imagemUrl: data.imageUrl };
-      setGeneratedPost(nextPost);
-      localStorage.setItem(draftStorageKey, JSON.stringify(nextPost));
+      applyGeneratedPost({ ...generatedPost, imagemUrl: data.imageUrl });
     } catch {
       setError("Falha ao regenerar arte.");
     } finally {
@@ -189,12 +230,16 @@ export default function Home() {
     setIsSaving(true);
     setError(null);
 
+    const scheduleIso = selectedScheduleAt
+      ? new Date(selectedScheduleAt).toISOString()
+      : parseBrazilDateToIso(generatedPost.sugestaoDataHorario);
+
     const payload = {
       title: generatedPost.titulo,
       caption: generatedPost.legenda,
       hashtags: generatedPost.hashtags,
       suggestedSchedule: generatedPost.sugestaoDataHorario,
-      scheduledAt: parseBrazilDateToIso(generatedPost.sugestaoDataHorario),
+      scheduledAt: scheduleIso,
       visualPrompt: generatedPost.promptVisual,
       imageUrl: generatedPost.imagemUrl,
       platforms,
@@ -236,6 +281,7 @@ export default function Home() {
       setScheduledPosts((prev) => [data as ScheduledPost, ...prev]);
       localStorage.removeItem(draftStorageKey);
       setGeneratedPost(null);
+      setSelectedScheduleAt("");
     } catch {
       setError("Falha ao agendar post.");
     } finally {
@@ -304,18 +350,24 @@ export default function Home() {
             <input
               value={prompt}
               onChange={(event) => setPrompt(event.target.value)}
-              placeholder="O que vamos criar hoje para sua marca?"
+              placeholder={
+                generatedPost
+                  ? "Ex: move a garrafa de cachaça para a esquerda"
+                  : "O que vamos criar hoje para sua marca?"
+              }
             />
             <button className="sendBtn" type="submit" disabled={isLoading}>
               {isLoading ? <Loader2 size={15} className="spinIcon" /> : <Send size={15} />}
-              <span>Gerar Post + Arte</span>
+              <span>{generatedPost ? "Refinar post" : "Gerar Post + Arte"}</span>
             </button>
           </form>
 
           {error ? <p className="generationError">{error}</p> : null}
 
+          {isLoading ? <section className="generatedCard morphingCard" aria-hidden="true" /> : null}
+
           {generatedPost ? (
-            <section className="generatedCard" aria-live="polite">
+            <section className="generatedCard morphIn" aria-live="polite">
               <div className="generatedCardHeader">
                 <h2>
                   <Sparkles size={18} />
@@ -334,15 +386,14 @@ export default function Home() {
               <h3>{generatedPost.titulo}</h3>
               <p>{generatedPost.legenda}</p>
 
-              <div className="generatedMeta">
+              <div className="generatedMeta singleColumn">
                 <div>
-                  <strong>Prompt visual</strong>
-                  <span>{generatedPost.promptVisual}</span>
-                </div>
-
-                <div>
-                  <strong>Horário sugerido</strong>
-                  <span>{generatedPost.sugestaoDataHorario}</span>
+                  <strong>Horário do post</strong>
+                  <input
+                    type="datetime-local"
+                    value={selectedScheduleAt}
+                    onChange={(event) => setSelectedScheduleAt(event.target.value)}
+                  />
                 </div>
               </div>
 
@@ -385,7 +436,7 @@ export default function Home() {
                 <button type="button" onClick={handleRegenerateImage} disabled={isImageLoading}>
                   {isImageLoading ? "Gerando..." : "Regenerar arte"}
                 </button>
-                <button type="button" onClick={handleRegenerateCaption} disabled={isLoading}>
+                <button type="button" onClick={handleQuickCaptionRegeneration} disabled={isLoading}>
                   Regenerar legenda
                 </button>
                 <button type="button" onClick={handleApproveAndSchedule} disabled={isSaving}>
@@ -543,12 +594,12 @@ export default function Home() {
             Dica da IA
           </h2>
 
-          <p>“Deixe o post em scheduled e use publicar agora para validar sua integração Meta.”</p>
+          <p>“Com o post aberto, mande ajustes curtos no campo principal para refinar arte e legenda.”</p>
         </section>
 
         <section className="notificationCard">
           <MessageCircle size={16} />
-          Fluxo completo: gerar, aprovar, agendar e publicar manualmente.
+          Fluxo completo: gerar, refinar, aprovar, agendar e publicar manualmente.
         </section>
 
         <section className="eventItem" style={{ marginTop: 12 }}>
