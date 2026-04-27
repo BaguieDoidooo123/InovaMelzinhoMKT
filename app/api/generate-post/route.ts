@@ -5,7 +5,7 @@ import { GeneratedPost } from "@/lib/types";
 
 type GeneratedPostWithoutImage = Omit<GeneratedPost, "imagemUrl">;
 
-const generationModel = "gemini-2.0-flash-001";
+const generationModel = "gemini-2.5-flash";
 
 const outputSchema = {
   type: "object",
