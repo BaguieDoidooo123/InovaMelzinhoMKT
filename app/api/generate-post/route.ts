@@ -1,14 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
+import { buildImageUrl } from "@/lib/image";
+import { GeneratedPost } from "@/lib/types";
 
-type GeneratedPost = {
-  titulo: string;
-  legenda: string;
-  tipoPost: string;
-  promptVisual: string;
-  sugestaoDataHorario: string;
-  hashtags: string[];
-};
+type GeneratedPostWithoutImage = Omit<GeneratedPost, "imagemUrl">;
 
 const generationModel = "gemini-2.0-flash-001";
 
@@ -35,12 +30,12 @@ const outputSchema = {
   ],
 } as const;
 
-function isGeneratedPost(data: unknown): data is GeneratedPost {
+function isGeneratedPost(data: unknown): data is GeneratedPostWithoutImage {
   if (typeof data !== "object" || data === null) {
     return false;
   }
 
-  const typedData = data as Partial<GeneratedPost>;
+  const typedData = data as Partial<GeneratedPostWithoutImage>;
 
   return (
     typeof typedData.titulo === "string" &&
@@ -112,7 +107,10 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json(parsed);
+    return NextResponse.json({
+      ...parsed,
+      imagemUrl: buildImageUrl(parsed.promptVisual),
+    } satisfies GeneratedPost);
   } catch (error) {
     console.error("Erro ao gerar post com Gemini:", error);
 
