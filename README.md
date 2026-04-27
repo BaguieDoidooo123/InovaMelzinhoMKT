@@ -1,11 +1,11 @@
 # Assistente de Marketing AI (Next.js)
 
-Interface inicial em Next.js para um assistente de IA de marketing com:
+Interface em Next.js para um assistente de IA de marketing com:
 
-- Barra de conversa estilo copiloto
-- Planejador de conteúdo com cards no centro
-- Sidebar esquerda com navegação
-- Sidebar direita com resumo semanal e sugestões
+- Geração de título, legenda, hashtags, horário sugerido, prompt visual e arte.
+- Preview com ações: regenerar arte, regenerar legenda e aprovar/agendar.
+- Planejador/calendário lendo posts reais (Supabase).
+- Integração Meta para conexão da conta e publicação manual (`Publicar agora`).
 
 ## Rodar localmente
 
@@ -15,3 +15,22 @@ npm run dev
 ```
 
 Abra `http://localhost:3000`.
+
+## Variáveis de ambiente
+
+Crie `.env.local`:
+
+```bash
+GEMINI_API_KEY=...
+SUPABASE_URL=...
+SUPABASE_SERVICE_ROLE_KEY=...
+```
+
+## Banco de dados (Supabase)
+
+Rode o SQL em `supabase/schema.sql` no SQL Editor do projeto Supabase.
+
+## Observações
+
+- Sem Supabase configurado, o app salva agendamentos em `localStorage` **somente como fallback de teste local**.
+- Publicação automática (cron/worker) não foi implementada nesta etapa.

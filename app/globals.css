@@ -803,3 +803,71 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+.generatedImage {
+  width: 100%;
+  max-height: 360px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid #edd9bb;
+}
+
+.generatedActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.generatedActions button,
+.metaForm button,
+.cardActions button,
+.cardActions a {
+  border: 1px solid var(--border);
+  background: #fffaf3;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-strong);
+  text-decoration: none;
+}
+
+.generatedActions button:last-child,
+.metaForm button {
+  background: linear-gradient(135deg, #ebb14d, var(--accent));
+  border-color: var(--accent-strong);
+  color: #fff;
+}
+
+.platformSelector {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.platformSelector label {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cardActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.metaForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.metaForm input {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff;
+}
